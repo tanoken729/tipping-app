@@ -1,4 +1,4 @@
-# tipping-app2
+# tipping-app
 
 > A Vue.js project
 
