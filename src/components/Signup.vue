@@ -41,7 +41,7 @@ export default {
           () => {
             firebase.auth().currentUser.updateProfile({
               displayName: this.username,
-            })
+          })
         .then(
           () => {
             this.$router.push('/')
