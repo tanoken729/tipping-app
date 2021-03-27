@@ -23,7 +23,6 @@
 <script>
 /* eslint-disable */
 import firebase from 'firebase'
-// const user = firebase.auth().currentUser;
 
 export default {
   name: 'Signup',
@@ -37,13 +36,11 @@ export default {
   methods: {
     signUp: function () {
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-        .then(
-          () => {
+        .then(() => {
             firebase.auth().currentUser.updateProfile({
               displayName: this.username,
           })
-        .then(
-          () => {
+        .then(() => {
             this.$router.push('/')
           })
         })
