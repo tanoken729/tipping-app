@@ -10,6 +10,9 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
+        username: '',
+        email: '',
+        password: ''
     },
     mutations: {
         signUp: function (state) {

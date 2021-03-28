@@ -1,7 +1,7 @@
 <template>
   <div class="userList">
     <div class="main">
-    <h2>{{ name }}さんようこそ！！</h2>
+    <h2>{{ $store.state.username }}さんようこそ！！</h2>
       <h1>ユーザ一覧</h1>
     </div>
   </div>
@@ -9,12 +9,10 @@
 
 <script>
 /* eslint-disable */
-import firebase from 'firebase'
 
 export default {
   data () {
     return {
-      name: firebase.auth().currentUser.displayName,
     }
   },
   methods: {
