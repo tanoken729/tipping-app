@@ -4,7 +4,6 @@
     <h2>{{ name }}さんようこそ！！</h2>
       <h1>ユーザ一覧</h1>
     </div>
-    <button>ログイン</button>
   </div>
 </template>
 
