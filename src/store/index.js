@@ -6,7 +6,6 @@ import Vuex from 'vuex'
 import firebase from 'firebase'
 import router from '@/router'
 
-
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
