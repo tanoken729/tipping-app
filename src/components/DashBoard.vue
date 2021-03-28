@@ -4,7 +4,7 @@
     <h2>{{ name }}さんようこそ！！</h2>
       <h1>ユーザ一覧</h1>
     </div>
-    <button @click="signOut">Sign out</button>
+    <button>ログイン</button>
   </div>
 </template>
 
@@ -19,11 +19,6 @@ export default {
     }
   },
   methods: {
-    signOut: function () {
-      firebase.auth().signOut().then(() => {
-        this.$router.push('/signin')
-      })
-    }
   }
 }
 </script>

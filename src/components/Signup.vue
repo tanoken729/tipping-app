@@ -4,15 +4,15 @@
     <table>
       <tr>
         <td>ユーザ名</td>
-        <td><input type="text" placeholder="userName" v-model="username"></td>
+        <td><input type="text" placeholder="userName" v-model="$store.state.username"></td>
       </tr>
       <tr>
         <td>メールアドレス</td>
-        <td><input type="text" placeholder="E-mail" v-model="email"></td>
+        <td><input type="text" placeholder="E-mail" v-model="$store.state.email"></td>
       </tr>
       <tr>
         <td>パスワード</td>
-        <td><input type="password" placeholder="Password" v-model="password"></td>
+        <td><input type="password" placeholder="Password" v-model="$store.state.password"></td>
       </tr>
     </table>
     <button class="button" @click="signUp">新規登録</button>
@@ -22,7 +22,6 @@
 
 <script>
 /* eslint-disable */
-import firebase from 'firebase'
 
 export default {
   name: 'Signup',
@@ -34,19 +33,8 @@ export default {
     }
   },
   methods: {
-    signUp: function () {
-      firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-            firebase.auth().currentUser.updateProfile({
-              displayName: this.username,
-          })
-        .then(() => {
-            this.$router.push('/')
-          })
-        })
-        .catch(error => {
-          alert(error.message)
-        })
+    signUp () {
+      this.$store.commit('signUp')
     },
   }
 }
