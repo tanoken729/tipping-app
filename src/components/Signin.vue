@@ -91,5 +91,3 @@ input {
   text-decoration: none;
 }
 </style>
-
-```
