@@ -4,15 +4,15 @@
     <table>
       <tr>
         <td>ユーザ名</td>
-        <td><input type="text" placeholder="userName" v-model="$store.state.username"></td>
+        <td><input type="text" placeholder="userName" v-model="username"></td>
       </tr>
       <tr>
         <td>メールアドレス</td>
-        <td><input type="text" placeholder="E-mail" v-model="$store.state.email"></td>
+        <td><input type="text" placeholder="E-mail" v-model="email"></td>
       </tr>
       <tr>
         <td>パスワード</td>
-        <td><input type="password" placeholder="Password" v-model="$store.state.password"></td>
+        <td><input type="password" placeholder="Password" v-model="password"></td>
       </tr>
     </table>
     <button class="button" @click="signUp">新規登録</button>
@@ -34,7 +34,11 @@ export default {
   },
   methods: {
     signUp () {
-      this.$store.commit('signUp')
+      this.$store.dispatch('signUp', {
+        username: this.username,
+        email: this.email,
+        password: this.password,
+      })
     },
   }
 }

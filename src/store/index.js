@@ -15,11 +15,21 @@ const store = new Vuex.Store({
         password: ''
     },
     mutations: {
-        signUp: function (state) {
-            firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
+        AddToState: function (state, payload) {
+            state.email = payload.email
+            state.password = payload.password
+            state.username = payload.username
+        }
+    },
+    actions: {
+        signUp: function (context, payload) {
+            firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(() => {
                     firebase.auth().currentUser.updateProfile({
-                    displayName: state.username,
+                    displayName: payload.username,
+                    },)
+                .then(() => {
+                    context.commit('AddToState', payload)
                 })
                 .then(() => {
                     router.push('/')
