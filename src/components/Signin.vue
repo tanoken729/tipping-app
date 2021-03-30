@@ -11,12 +11,14 @@
         <td><input type="password" placeholder="Password" v-model="password"></td>
       </tr>
     </table>
-    <button class="button" @click="signUp">ログイン</button>
-      <router-link to="/signup">新規登録はこちらから</router-link>
+    <button class="button" @click="signIn">ログイン</button>
+      <router-link to="/signup" class="router">新規登録はこちらから</router-link>
   </div>
 </template>
 
 <script>
+/* eslint-disable */
+
 export default {
   name: 'Signin',
   data () {
@@ -25,7 +27,14 @@ export default {
       password: ''
     }
   },
-  methods: {}
+  methods: {
+    signIn () {
+      this.$store.dispatch('signIn', {
+        email: this.email,
+        password: this.password,
+      })
+    },
+  }
 }
 </script>
 
@@ -75,5 +84,9 @@ input {
   margin-top: 10px;
   border-radius: 0.5em;
   font-size: 20px;
+}
+
+.router {
+  text-decoration: none;
 }
 </style>

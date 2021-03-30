@@ -39,6 +39,18 @@ const store = new Vuex.Store({
                     alert(error.message)
                 })
         },
+        signIn: function (context, payload) {
+            firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+            .then(() => {
+                context.commit('AddToState', payload)
+            })
+            .then(() => {
+                router.push('/')
+            })
+            .catch(error => {
+                alert(error.message)
+            })
+        }
     },
 });
 
