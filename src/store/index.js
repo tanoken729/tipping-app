@@ -12,42 +12,24 @@ const store = new Vuex.Store({
     state: {
         username: '',
         email: '',
-        password: '',
-        myWallet: '',
+        password: ''
     },
-    // getters: {
-    //     setMyWallet: function (state, payload) {
-    //         state.myWallet = payload.myWallet
-    //     },
-    // },
     mutations: {
-        registerUserInfo: function (state, payload) {
+        AddToState: function (state, payload) {
             state.email = payload.email
             state.password = payload.password
             state.username = payload.username
-        },
-        getUserInfo: function (state, payload) {
-            state.email = payload.email
-            state.password = payload.password
-            state.username = firebase.auth().currentUser.displayName
-        },
-        registerMyWallet: function (state, payload) {
-            var db = firebase.firestore();
-            db.collection("users").add({
-                myWallet: payload.myWallet,
-            })
-            state.myWallet = payload.myWallet
         }
     },
     actions: {
         signUp: function (context, payload) {
-            firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password, payload.myWallet)
+            firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(() => {
                     firebase.auth().currentUser.updateProfile({
                     displayName: payload.username,
                     },)
                 .then(() => {
-                    context.commit('registerUserInfo', payload)
+                    context.commit('AddToState', payload)
                 })
                 .then(() => {
                     router.push('/')
@@ -60,8 +42,7 @@ const store = new Vuex.Store({
         signIn: function (context, payload) {
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
             .then(() => {
-                context.commit('getUserInfo', payload)
-                context.commit('registerMyWallet', payload)
+                context.commit('AddToState', payload)
             })
             .then(() => {
                 router.push('/')

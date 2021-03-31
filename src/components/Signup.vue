@@ -29,17 +29,15 @@ export default {
     return {
       username: '',
       email: '',
-      password: '',
-      myWallet: 500,
+      password: ''
     }
   },
   methods: {
-    async signUp () {
-      await this.$store.dispatch('signUp', {
-            username: this.username,
-            email: this.email,
-            password: this.password,
-            myWallet: this.myWallet,
+    signUp () {
+      this.$store.dispatch('signUp', {
+        username: this.username,
+        email: this.email,
+        password: this.password,
       })
     },
   }
