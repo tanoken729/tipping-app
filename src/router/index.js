@@ -3,15 +3,21 @@ import Router from 'vue-router'
 import DashBoard from '@/components/DashBoard'
 import Signup from '@/components/Signup'
 import Signin from '@/components/Signin'
+import firebase from 'firebase'
 
-const router = Vue.use(Router)
+Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
+    {
+      path: '*',
+      redirect: 'signin'
+    },
     {
       path: '/',
       name: 'DashBoard',
-      component: DashBoard
+      component: DashBoard,
+      meta: { requiresAuth: true }
     },
     {
       path: '/signup',
@@ -26,4 +32,23 @@ export default new Router({
   ]
 })
 
-export { router }
+router.beforeEach((to, from, next) => {
+  let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  let currentUser = firebase.auth().currentUser
+  if (requiresAuth) {
+    // このルートはログインされているかどうか認証が必要です。
+    // もしされていないならば、ログインページにリダイレクトします。
+    if (!currentUser) {
+      next({
+        path: '/signin',
+        query: { redirect: to.fullPath }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // next() を常に呼び出すようにしてください!
+  }
+})
+
+export default router
