@@ -1,9 +1,9 @@
 <template>
   <div class="userList">
     <header>
-      <h2 class="header">{{ $store.state.username }}さんようこそ！！</h2>
+      <h2 class="header">{{ $store.getters.username }}さんようこそ！！</h2>
       <nav class="pc-nav">
-        <h2 class="header">残高：{{ $store.state.myWallet }}</h2>
+        <h2 class="header">残高：{{ $store.getters.myWallet }}</h2>
       </nav>
     </header>
     <div class="main">
@@ -37,9 +37,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-* {
-  /* outline: 1px solid; */
-}
+/* * {
+  outline: 1px solid;
+} */
 
 h1, h2 {
   font-weight: normal;

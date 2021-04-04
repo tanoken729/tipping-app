@@ -15,49 +15,56 @@ const store = new Vuex.Store({
         password: '',
         myWallet: '',
     },
+    getters: {
+        username: state => {
+           return state.username
+        },
+        email: state => {
+           return state.email
+        },
+        password: state => {
+           return state.password
+        },
+        myWallet: state => {
+           return state.myWallet
+        },
+    },
     mutations: {
         // 新規登録時ユーザ情報登録
-        registerUserData: function (state, payload) {
-            // データベースへ登録
-            const db = firebase.firestore();
-            db.collection("userData").add({
-                email: payload.email,
-                password: payload.password,
-                username: payload.username,
-                myWallet: payload.myWallet,
-            })
+        registerUserData (state, payload) {
             // stateへ格納
             state.email = payload.email
             state.password = payload.password
             state.username = payload.username
             state.myWallet = payload.myWallet
         },
-        setUserData: function (state) {
-            const db = firebase.firestore();
-            const docRef = db.collection("userData").doc("RomK8cNVaEW63edXp9d6");
-            docRef.get()
-            .then((doc) => {
-                if (doc.exists) {
-                    state.username = doc.data().username
-                    state.myWallet = doc.data().myWallet
-                } else {
-                    console.log("No such document!");
-                }
-            }).catch((error) => {
-                alert(error.message)
-            });
+        setUserData (state, doc) {
+            state.username = doc.data().username
+            state.myWallet = doc.data().myWallet
         },
     },
     actions: {
         // 新規登録
-        signUp: function (context, payload) {
+        signUp (context, payload) {
             // firebase Authにユーザ情報登録
             firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(() => {
                     // firebase Authのユーザ名更新
-                    firebase.auth().currentUser.updateProfile({
+                    const user = firebase.auth().currentUser
+                    user.updateProfile({
                     displayName: payload.username,
                     },)
+                .then(() => {
+                    // データベースへ登録
+                    const db = firebase.firestore();
+                    db.collection("userData").doc(user.uid).set({
+                        uid: user.uid,
+                        email: payload.email,
+                        password: payload.password,
+                        username: payload.username,
+                        myWallet: payload.myWallet,
+                    })
+                })
                 .then(() => {
                     context.commit('registerUserData', payload)
                 })
@@ -70,11 +77,22 @@ const store = new Vuex.Store({
                 })
         },
         // ログイン
-        signIn: function (context, payload) {
+        signIn (context, payload) {
             // 登録済みのメールアドレスとパスワードでログイン
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
             .then(() => {
-                context.commit('setUserData')
+                const user = firebase.auth().currentUser
+                const docRef = firebase.firestore().collection("userData").doc(user.uid);
+                docRef.get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        context.commit('setUserData', doc)
+                    } else {
+                        console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    alert(error.message)
+                });
             })
             .then(() => {
                 router.push('/')
