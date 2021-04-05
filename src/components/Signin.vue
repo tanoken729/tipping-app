@@ -32,6 +32,7 @@ export default {
       this.$store.dispatch('signIn', {
         email: this.email,
         password: this.password,
+        myWallet: 500,
       })
     },
   }
