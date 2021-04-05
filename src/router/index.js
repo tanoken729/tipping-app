@@ -18,7 +18,7 @@ const router = new Router({
       path: '/',
       name: 'DashBoard',
       component: DashBoard,
-      meta: { requiresAuth: true } //DashBoardコンポーネントの表示には認証が必要と定義
+      meta: { requiresAuth: true }
     },
     {
       path: '/signup',
@@ -35,13 +35,10 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  // ルートメタフィールドのrequiredAuthプロパティがtrueの場合、認証されているかどうかをチェックする挙動を実装
-  if (requiresAuth) { //true or false
-    firebase.auth().onAuthStateChanged(function (user) { // ログインしているユーザーを取得
-      // ユーザがログインされているかどうか認証
+  if (requiresAuth) {
+    firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        next() //nextを呼ぶとtoのコンポーネントに遷移
-      // ログインページにリダイレクト
+        next()
       } else {
         next({
           path: '/signin',
