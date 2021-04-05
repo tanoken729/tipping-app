@@ -4,6 +4,7 @@
       <h2 class="header">{{ $store.getters.username }}さんようこそ！！</h2>
       <nav class="pc-nav">
         <h2 class="header">残高：{{ $store.getters.myWallet }}</h2>
+        <button class="button header" @click="signOut">ログアウト</button>
       </nav>
     </header>
     <div class="main">
@@ -24,6 +25,7 @@
 
 <script>
 /* eslint-disable */
+import firebase from 'firebase'
 
 export default {
   data () {
@@ -31,6 +33,11 @@ export default {
     }
   },
   methods: {
+    signOut: function () {
+      firebase.auth().signOut().then(() => {
+      this.$router.push('/signin')
+      })
+    }
   }
 }
 </script>
