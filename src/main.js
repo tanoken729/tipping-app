@@ -15,6 +15,22 @@ import { config } from '@/utilities/firebase.config';
 firebase.initializeApp(config);
 
 /* eslint-disable no-new */
+// Vue.component('open-modal',{
+//   template : `
+//     <div id="content">
+//       <div id="content">
+//         <p>これがモーダルウィンドウです。</p>
+//         <p><button v-on:click="clickEvent">close</button></p>
+//       </div>
+//     </div>
+//     `,
+//   methods :{
+//     clickEvent: function(){
+//       this.$emit('from-child')
+//      }
+//   }
+// })
+
 new Vue({
   el: '#app',
   router,

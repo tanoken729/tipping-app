@@ -57,11 +57,17 @@ a {
 }
 .signin {
   margin-top: 20px;
-
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  align-items: center
+  align-items: center;
+  /* border: 5px solid #3cb371;
+  background-color: #b4ebd8;
+  max-width: 80%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-bottom: 20px;
+  border-radius: 0.5em; */
 }
 input {
   margin: 10px 0;
