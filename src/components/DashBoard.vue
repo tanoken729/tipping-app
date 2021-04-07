@@ -33,10 +33,13 @@ export default {
     }
   },
   methods: {
-    signOut: function () {
-      firebase.auth().signOut().then(() => {
-      this.$router.push('/signin')
-      })
+    // signOut () {
+    //   firebase.auth().signOut().then(() => {
+    //   this.$router.push('/signin')
+    //   })
+    // },
+    signOut () {
+      this.$store.dispatch('signOut')
     }
   }
 }

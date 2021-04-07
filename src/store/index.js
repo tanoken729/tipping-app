@@ -100,7 +100,12 @@ const store = new Vuex.Store({
             .catch(error => {
                 alert(error.message)
             })
-        }
+        },
+        signOut () {
+            firebase.auth().signOut().then(() => {
+                router.push('/signin')
+            })
+        },
     },
 });
 
