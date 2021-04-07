@@ -41,7 +41,6 @@
 import firebase from 'firebase'
 
 export default {
-  // el: '#open-modal',
   data () {
     return {
       showContent: false
@@ -65,9 +64,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-* {
+/* * {
   outline: 1px solid;
-}
+} */
 
 h1, h2 {
   font-weight: normal;
@@ -184,11 +183,12 @@ nav {
   padding-bottom: 3px;
 }
 
+/* モーダルないの上下で色違うやつのcssの当て方あってるか聞く */
 .modal-button {
   background-color: #ff0000;
   color: #fff;
   padding: 10px 20px;
-  border-radius: 0.2rem;
+  border-radius: 0.3rem;
   border: none;
   font-size: 20px;
   margin-left: 50%;
@@ -197,7 +197,7 @@ nav {
   background-color: #ff4500;
   color: #fff;
   padding: 10px 20px;
-  border-radius: 0.2rem;
+  border-radius: 0.3rem;
   border: none;
   font-size: 20px;
   margin-left: 50%;
