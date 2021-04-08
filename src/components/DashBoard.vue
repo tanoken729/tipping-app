@@ -4,6 +4,7 @@
       <h2 class="header">{{ $store.getters.username }}さんようこそ！！</h2>
       <nav class="pc-nav">
         <h2 class="header">残高：{{ $store.getters.myWallet }}</h2>
+        <button class="button header" @click="signOut">ログアウト</button>
       </nav>
     </header>
     <div class="main">
@@ -31,6 +32,9 @@ export default {
     }
   },
   methods: {
+    signOut () {
+      this.$store.dispatch('signOut')
+    }
   }
 }
 </script>

@@ -1,17 +1,24 @@
+/* eslint-disable */
 import Vue from 'vue'
 import Router from 'vue-router'
 import DashBoard from '@/components/DashBoard'
 import Signup from '@/components/Signup'
 import Signin from '@/components/Signin'
+import firebase from 'firebase'
 
-const router = Vue.use(Router)
+Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
+    {
+      path: '*',
+      redirect: 'signin'
+    },
     {
       path: '/',
       name: 'DashBoard',
-      component: DashBoard
+      component: DashBoard,
+      meta: { requiresAuth: true }
     },
     {
       path: '/signup',
@@ -26,4 +33,22 @@ export default new Router({
   ]
 })
 
-export { router }
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  if (requiresAuth) {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        next()
+      } else {
+        next({
+          path: '/signin',
+          query: { redirect: to.fullPath }
+        })
+      }
+    })
+  } else {
+    next()
+  }
+})
+
+export default router
