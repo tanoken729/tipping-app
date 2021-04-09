@@ -20,11 +20,11 @@ export default {
     }
   },
   methods: {
-    openModal: function(){
-      this.showContent = true
+    openModal (){
+      this.$emit("open",this.showContent);
     },
-    closeModal: function(){
-      this.showContent = false
+    closeModal (){
+      this.$emit("close",this.showContent);
     }
   }
 }

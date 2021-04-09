@@ -13,29 +13,20 @@
         <tr>
           <th>ユーザ名</th>
         </tr>
-        <tr>
-          <td></td>
+        <tr v-for="user in users" :key="user.message">
+          <td>{{ user }}</td>
           <td><button class="button2" v-on:click="openModal">walletを見る</button></td>
           <td><button class="button2">送る</button></td>
         </tr>
       </table>
       <div>
         <modal
+          v-show="showContent"
+          v-on:click="closeModal"
+          @open="showContent = true"
+          @close="showContent = false"
         ></modal>
       </div>
-      <!-- <div id="overlay" v-show="showContent">
-        <div id="main-content">
-          <p>さんの残高</p>
-          <p>数字</p>
-          <div id="button-content">
-            <p><button v-on:click="closeModal" class="modal-button">close</button></p>
-          </div>
-        </div>
-      </div> -->
-      <!-- <open-modal
-        v-show="showContent"
-        v-on:from-child="closeModal"
-      ></open-modal> -->
     </div>
   </div>
 </template>
@@ -44,6 +35,7 @@
 /* eslint-disable */
 import firebase from 'firebase'
 import modal from '@/components/modal.vue'
+import username from '@/utilities/get-user';
 
 export default {
   components: {
@@ -51,21 +43,29 @@ export default {
   },
   data () {
     return {
-      // showContent: false
+      showContent: false,
+      users: username
     }
   },
   methods: {
-    signOut: function () {
+    signOut () {
       firebase.auth().signOut().then(() => {
       this.$router.push('/signin')
       })
     },
-    openModal: function(){
+    openModal (){
       this.showContent = true
     },
-    closeModal: function(){
+    closeModal (){
       this.showContent = false
-    }
+    },
+    // getUser () {
+    //   db.collection("userData").get().then(function(querySnapshot) {
+    //     querySnapshot.forEach(function(doc) {
+    //       console.log(doc.id, " => ", doc.data());
+    //     });
+    //   });
+    // }
   }
 }
 </script>
@@ -84,7 +84,6 @@ ul {
   padding: 0;
 }
 li {
-  /* display: inline-block; */
   margin: 0 10px;
 }
 a {
