@@ -14,6 +14,8 @@ const store = new Vuex.Store({
         email: '',
         password: '',
         myWallet: '',
+        users: [],
+        modalData: [],
     },
     getters: {
         username: state => {
@@ -28,19 +30,33 @@ const store = new Vuex.Store({
         myWallet: state => {
            return state.myWallet
         },
+        users: state => {
+           return state.users
+        },
+        modalData: state => {
+           return state.modalData
+        },
     },
     mutations: {
         // 新規登録時ユーザ情報登録
         registerUserData (state, payload) {
-            // stateへ格納
             state.email = payload.email
             state.password = payload.password
             state.username = payload.username
             state.myWallet = payload.myWallet
         },
+        // ログイン時ユーザ情報をセット
         setUserData (state, doc) {
             state.username = doc.data().username
             state.myWallet = doc.data().myWallet
+        },
+        // ログイン時登録ユーザ名をセット
+        setUsersData (state, users) {
+            state.users = users
+        },
+        // ログイン時モーダル内のデータをセット
+        setModalData (state, modalData) {
+            state.modalData = modalData
         },
     },
     actions: {
@@ -81,6 +97,7 @@ const store = new Vuex.Store({
             // 登録済みのメールアドレスとパスワードでログイン
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
             .then(() => {
+                // ログインしているユーザーの名前を取得
                 const user = firebase.auth().currentUser
                 const docRef = firebase.firestore().collection("userData").doc(user.uid);
                 docRef.get()
@@ -94,12 +111,48 @@ const store = new Vuex.Store({
                     alert(error.message)
                 });
             })
+            // ログインユーザー以外の登録ユーザを配列で取得
+            .then(() => {
+                const users = []
+                const user = firebase.auth().currentUser
+                const db = firebase.firestore();
+                db.collection("userData")
+                    .where(firebase.firestore.FieldPath.documentId(), "!=", user.uid)
+                    .get()
+                    .then((querySnapshot) => {
+                        querySnapshot.forEach((doc) => {
+                            const user = {
+                                username: doc.data().username,
+                                myWallet: doc.data().myWallet
+                            }
+                            users.push(user)
+                            context.commit('setUsersData', users)
+                        });
+                    });
+            })
             .then(() => {
                 router.push('/')
             })
             .catch(error => {
                 alert(error.message)
             })
+        },
+        // クリックされたユーザー、ユーザーの残高をモーダルウィンドウにセットする
+        modalSet (context, payload) {
+            const modalData = [];
+            const user = firebase.auth().currentUser
+            const db = firebase.firestore();
+            db.collection("userData")
+                .where(firebase.firestore.FieldPath.documentId(), "!=", user.uid)
+                .get()
+                .then(() => {
+                    const modaldatum = {
+                        clickedUser: payload.clickedUser,
+                        clickedUserWallet: payload.clickedUserWallet,
+                    }
+                    modalData.push(modaldatum)
+                    context.commit('setModalData', modalData)
+                });
         },
         // ログアウト
         signOut () {
