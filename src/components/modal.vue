@@ -1,8 +1,8 @@
 <template>
   <div id="overlay" v-show="showContent">
     <div id="main-content">
-      <p v-for="(modaldatum, index) in $store.getters.modalData" v-bind:key="`first-${index}`">{{ modaldatum.clickedUser }}さんの残高</p>
-      <p v-for="(modaldatum, index) in $store.getters.modalData" v-bind:key="`second-${index}`">{{ modaldatum.clickedUserWallet }}</p>
+      <p v-for="(modaldatum, index) in modalData" :key="`first-${index}`">{{ modaldatum.clickedUser }}さんの残高</p>
+      <p v-for="(modaldatum, index) in modalData" :key="`second-${index}`">{{ modaldatum.clickedUserWallet }}</p>
       <div id="button-content">
         <p><button v-on:click="closeModal" class="modal-button">close</button></p>
       </div>
@@ -14,9 +14,6 @@
 /* eslint-disable */
 
 export default {
-  // props: {
-  //     index: Number
-  // },
   data () {
     return {
       showContent: false
@@ -28,6 +25,11 @@ export default {
     },
     closeModal (){
       this.$emit("close", this.showContent);
+    }
+  },
+  computed: {
+    modalData () {
+      return this.$store.getters.modalData
     }
   }
 }

@@ -13,11 +13,11 @@
         <tr>
           <th>ユーザ名</th>
         </tr>
-        <div v-for="(user, index) in $store.getters.users" v-bind:key="index">
+        <div v-for="(user, index) in users" :key="index">
           <tr>
             <td>{{ index }}</td>
             <td>{{ user.username }}</td>
-            <td><button class="button2" v-on:click="openModal(user.username, user.myWallet)">walletを見る</button></td>
+            <td><button class="button2" @click="openModal(user.username, user.myWallet)">walletを見る</button></td>
             <td><button class="button2">送る</button></td>
           </tr>
         </div>
@@ -70,6 +70,11 @@ export default {
     closeModal (){
       this.showContent = false
     },
+  },
+  computed: {
+    users () {
+      return this.$store.getters.users
+    }
   }
 }
 </script>
