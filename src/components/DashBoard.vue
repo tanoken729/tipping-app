@@ -13,27 +13,67 @@
         <tr>
           <th>ユーザ名</th>
         </tr>
-        <tr>
-          <td></td>
-          <td><button class="button2">walletを見る</button></td>
-          <td><button class="button2">送る</button></td>
-        </tr>
+        <div v-for="(user, index) in users" :key="index">
+          <tr>
+            <td>{{ index }}</td>
+            <td>{{ user.username }}</td>
+            <td><button class="button2" @click="openModal(user.username, user.myWallet)">walletを見る</button></td>
+            <td><button class="button2">送る</button></td>
+          </tr>
+        </div>
       </table>
+      <div>
+        <transition>
+          <modal
+            v-show="showContent"
+            v-on:click="closeModal"
+            @open="showContent = true"
+            @close="showContent = false"
+          ></modal>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
+import modal from '@/components/modal.vue'
 
 export default {
+  components: {
+    modal,
+  },
   data () {
     return {
+      showContent: false,
+      clickedUser: '',
+      clickedUserWallet: '',
     }
   },
   methods: {
     signOut () {
       this.$store.dispatch('signOut')
+    },
+    openModal (clickedUser, clickedUserWallet){
+      // モーダルウィンドウを表示する
+      this.showContent = true
+      // クリックで選択されたユーザーのデータを取得（users配列からデータを取得）
+      this.clickedUser = clickedUser
+      this.clickedUserWallet = clickedUserWallet
+      // クリックされたユーザー、ユーザーの残高をモーダルウィンドウにセットする関数に渡す
+      this.$store.dispatch('modalSet', {
+        clickedUser: this.clickedUser,
+        clickedUserWallet: this.clickedUserWallet
+        })
+    },
+    closeModal (){
+      this.showContent = false
+    },
+  },
+  computed: {
+    users () {
+      return this.$store.getters.users
     }
   }
 }
@@ -53,7 +93,6 @@ ul {
   padding: 0;
 }
 li {
-  /* display: inline-block; */
   margin: 0 10px;
 }
 a {
@@ -125,5 +164,13 @@ nav {
   display: flex;
   margin: 0 0 0 60%;
   font-size: 14px;
+}
+
+.v-enter-active, .v-leave-active {
+  transition: opacity .5s
+}
+
+.v-enter, .v-leave-to {
+  opacity: 0
 }
 </style>
