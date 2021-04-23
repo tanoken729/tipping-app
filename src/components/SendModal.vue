@@ -19,7 +19,6 @@ export default {
     return {
       showContent2: false,
       tippingWallet: '',
-      index: ''
     }
   },
   methods: {
@@ -28,9 +27,11 @@ export default {
     },
     closeSendModal (){
       this.$emit("close2", this.tippingWallet);
+      this.tippingWallet = ''
     },
     onlyCloseSendModal (){
       this.$emit("close3");
+      this.tippingWallet = ''
     },
   },
   computed: {
