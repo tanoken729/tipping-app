@@ -1,10 +1,11 @@
 <template>
-  <div id="overlay" v-show="showContent">
+  <div id="overlay" v-show="showContent2" @click.self="onlyCloseSendModal">
     <div id="main-content">
-      <p v-for="(modaldatum, index) in modalData" :key="`first-${index}`">{{ modaldatum.clickedUser }}さんの残高</p>
-      <p v-for="(modaldatum, index) in modalData" :key="`second-${index}`">{{ modaldatum.clickedUserWallet }}</p>
+      <p>あなたの残高：{{ $store.getters.myWallet }}</p>
+      <p>送る金額</p>
+      <input type="text" class="text" v-model="tippingWallet">
       <div id="button-content">
-        <p><button v-on:click="closeModal" class="modal-button">close</button></p>
+        <p><button @click="closeSendModal" class="modal-button">送信</button></p>
       </div>
     </div>
   </div>
@@ -16,18 +17,26 @@
 export default {
   data () {
     return {
-      showContent: false
+      showContent2: false,
+      tippingWallet: '',
+      index: ''
     }
   },
   methods: {
-    openModal (){
-      this.$emit("open", this.showContent);
+    openSendModal (){
+      this.$emit("open2");
     },
-    closeModal (){
-      this.$emit("close", this.showContent);
-    }
+    closeSendModal (){
+      this.$emit("close2", this.tippingWallet);
+    },
+    onlyCloseSendModal (){
+      this.$emit("close3");
+    },
   },
   computed: {
+    users () {
+      return this.$store.getters.users
+    },
     modalData () {
       return this.$store.getters.modalData
     }
@@ -89,4 +98,8 @@ export default {
   margin-left: 50%;
 }
 
+.text{
+  margin-bottom: 20px;
+  padding: 5px 10px;
+}
 </style>

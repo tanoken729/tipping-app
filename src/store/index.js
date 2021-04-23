@@ -3,7 +3,9 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
 import router from '@/router'
 
 Vue.use(Vuex)
@@ -58,6 +60,9 @@ const store = new Vuex.Store({
         setModalData (state, modalData) {
             state.modalData = modalData
         },
+        setTipping (state, doc) {
+            state.myWallet = doc.data().myWallet
+        }
     },
     actions: {
         // 新規登録
@@ -71,7 +76,7 @@ const store = new Vuex.Store({
                     displayName: payload.username,
                     },)
                 .then(() => {
-                    // データベースへ登録
+                    // firestoreへ登録
                     const db = firebase.firestore();
                     db.collection("userData").doc(user.uid).set({
                         uid: user.uid,
@@ -122,6 +127,7 @@ const store = new Vuex.Store({
                     .then((querySnapshot) => {
                         querySnapshot.forEach((doc) => {
                             const user = {
+                                uid: doc.data().uid,
                                 username: doc.data().username,
                                 myWallet: doc.data().myWallet
                             }
@@ -139,7 +145,6 @@ const store = new Vuex.Store({
         },
         // クリックされたユーザー、ユーザーの残高をモーダルウィンドウにセットする
         modalSet (context, payload) {
-            const modalData = [];
             const user = firebase.auth().currentUser
             const db = firebase.firestore();
             db.collection("userData")
@@ -150,9 +155,75 @@ const store = new Vuex.Store({
                         clickedUser: payload.clickedUser,
                         clickedUserWallet: payload.clickedUserWallet,
                     }
+                    const modalData = [];
                     modalData.push(modaldatum)
                     context.commit('setModalData', modalData)
                 });
+        },
+        // 投げ銭機能
+        tipping (context, payload) {
+            const user = firebase.auth().currentUser
+            const db = firebase.firestore();
+            const docRef = db.collection("userData").doc(user.uid);
+            docRef.update({
+                myWallet: firebase.firestore.FieldValue.increment(-payload.tippingWallet)
+            })
+            // storeのmyWallet（ログインユーザー）の更新
+            .then(() => {
+                docRef.get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        context.commit('setTipping', doc)
+                    } else {
+                        console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    alert(error.message)
+                });
+            })
+            // firestoreのmyWallet（選択ユーザー）の更新
+            db.collection("userData").doc(payload.clickedUserUid).update({
+                myWallet: firebase.firestore.FieldValue.increment(payload.tippingWallet)
+            })
+            // storeのusers（選択ユーザー）の更新
+            .then(() => {
+                const users = []
+                db.collection("userData")
+                .where(firebase.firestore.FieldPath.documentId(), "!=", user.uid)
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const user = {
+                            uid: doc.data().uid,
+                            username: doc.data().username,
+                            myWallet: doc.data().myWallet
+                        }
+                        users.push(user)
+                        context.commit('setUsersData', users)
+                    });
+                });
+            })
+            // トランザクション処理Ver.（エラー解決策なしのため、いったんコメントアウト）
+            // const db = firebase.firestore();
+            // const user = firebase.auth().currentUser
+            // const docRef = db.collection("userData").doc(user.uid);
+            // return db.runTransaction((transaction) => {
+            //     // This code may get re-run multiple times if there are conflicts.
+            //     return transaction.get(docRef).then((doc) => {
+            //         if (!doc.exists) {
+            //             throw "Document does not exist!";
+            //         }
+            //         const tippingWallet = parseInt(doc.data().myWallet + -payload.tippingWallet);
+            //         transaction.update(docRef, { myWallet: tippingWallet });
+            //         console.log(typeof tippingWallet);
+            //     });
+            // })
+            // .then(() => {
+            //     console.log("Transaction successfully committed!");
+            // }).catch((error) => {
+            //     console.log("Transaction failed: ", error);
+            // });
+            // firestoreのmyWallet（ログインユーザー）の更新
         },
         // ログアウト
         signOut () {
