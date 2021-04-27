@@ -4,11 +4,11 @@
         <p>あなたの残高：{{ $store.getters.myWallet }}</p>
         <p>送る金額</p>
         <!-- 投げ銭金額入力フォーム -->
-        <input type="text" class="text" v-model="tippingWallet" @input="validateInputs">
+        <input type="text" class="text" v-model="tippingWallet">
         <!-- エラーメッセージ -->
-        <p v-if="required" class="error-message">{{ requiredErrorMessage }}</p>
-        <p v-if="numeric" class="error-message">{{ numericErrorMessage }}</p>
-        <p v-if="limit" class="error-message">{{ limitErrorMessage }}</p>
+        <p v-if="required" class="error-message">金額を入力してください。</p>
+        <p v-if="numeric" class="error-message">数値で入力してください。</p>
+        <p v-if="limit" class="error-message">所持金が足りません。</p>
         <div id="button-content">
           <p><input @click="closeSendModal" class="modal-button" type="submit" value="送信" :disabled="activateSubmit"></p>
         </div>
@@ -24,12 +24,6 @@ export default {
     return {
       showContent2: false,
       tippingWallet: '',
-      required: false,
-      numeric: false,
-      limit: false,
-      requiredErrorMessage: '金額を入力してください。',
-      numericErrorMessage: '数値で入力してください。',
-      limitErrorMessage: '所持金が足りません。',
     }
   },
   methods: {
@@ -42,37 +36,7 @@ export default {
     onlyCloseSendModal (){
       this.$emit('onlyCloseSendModal');
       this.tippingWallet = ''
-      this.requiredErrorMessage = ''
     },
-    // バリデーション
-    validateInputs() {
-      // 空の時
-      if (this.tippingWallet == '') {
-        this.required = true
-        this.numeric = false
-        this.limit = false
-      }
-      // 入力数値が所持金より下回ったら上記エラーを非表示にする
-      else if (this.tippingWallet != '') {
-        this.required = false
-      }
-      // 空じゃない時（これがないと空のときも表示されてしまう）、かつ数値じゃないとき
-      if(this.tippingWallet != '' && !Number(this.tippingWallet)) {
-        this.required = false
-        this.numeric = true
-        this.limit = false
-      }
-      // 所持金を入力数値が上回った時
-      if(this.tippingWallet > this.$store.getters.myWallet) {
-        this.required = false
-        this.numeric = false
-        this.limit = true
-      }
-      // 入力数値が所持金より下回ったら上記エラーを非表示にする
-      else if (this.tippingWallet < this.$store.getters.myWallet) {
-        this.limit = false
-      }
-    }
   },
   computed: {
     users () {
@@ -80,6 +44,16 @@ export default {
     },
     modalData () {
       return this.$store.getters.modalData
+    },
+    // バリデーション
+    required () {
+      return this.tippingWallet == '' // 空の時
+    },
+    numeric () {
+      return this.tippingWallet != '' && !Number(this.tippingWallet) // 空じゃない時（これがないと空のときも表示されてしまう）、かつ数値じゃないとき
+    },
+    limit () {
+      return this.tippingWallet > this.$store.getters.myWallet // 所持金を入力数値が上回った時
     },
     // 送信ボタン有効化
     activateSubmit () {
