@@ -24,16 +24,16 @@
           <ShowWalletModal
             v-show="showContent"
             @click.self="closeShowWalletModal"
-            @open="openShowWalletModal"
-            @close="closeShowWalletModal"
+            @openShowWalletModal="openShowWalletModal"
+            @closeShowWalletModal="closeShowWalletModal"
           ></ShowWalletModal>
         </transition>
         <transition>
           <SendModal
             v-show="showContent2"
-            @open2="openSendModal"
-            @close2="closeSendModal"
-            @close3="onlyCloseSendModal"
+            @openSendModal="openSendModal"
+            @closeSendModal="closeSendModal"
+            @onlyCloseSendModal="onlyCloseSendModal"
           ></SendModal>
         </transition>
       </div>

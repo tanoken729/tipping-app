@@ -21,10 +21,10 @@ export default {
   },
   methods: {
     openShowWalletModal (){
-      this.$emit("open", this.showContent);
+      this.$emit('openShowWalletModal', this.showContent);
     },
     closeShowWalletModal (){
-      this.$emit("close", this.showContent);
+      this.$emit('closeShowWalletModal', this.showContent);
     }
   },
   computed: {
