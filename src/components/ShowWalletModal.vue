@@ -1,10 +1,10 @@
 <template>
-  <div id="overlay" v-show="showContent">
+  <div id="overlay" v-show="showContent" @click.self="closeShowWalletModal">
     <div id="main-content">
       <p v-for="(modaldatum, index) in modalData" :key="`first-${index}`">{{ modaldatum.clickedUser }}さんの残高</p>
       <p v-for="(modaldatum, index) in modalData" :key="`second-${index}`">{{ modaldatum.clickedUserWallet }}</p>
       <div id="button-content">
-        <p><button v-on:click="closeModal" class="modal-button">close</button></p>
+        <p><button v-on:click="closeShowWalletModal" class="modal-button">close</button></p>
       </div>
     </div>
   </div>
@@ -20,11 +20,11 @@ export default {
     }
   },
   methods: {
-    openModal (){
-      this.$emit("open", this.showContent);
+    openShowWalletModal (){
+      this.$emit('openShowWalletModal', this.showContent);
     },
-    closeModal (){
-      this.$emit("close", this.showContent);
+    closeShowWalletModal (){
+      this.$emit('closeShowWalletModal', this.showContent);
     }
   },
   computed: {

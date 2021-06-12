@@ -13,23 +13,28 @@
         <tr>
           <th>ユーザ名</th>
         </tr>
-        <div v-for="(user, index) in users" :key="index">
-          <tr>
-            <td>{{ index }}</td>
-            <td>{{ user.username }}</td>
-            <td><button class="button2" @click="openModal(user.username, user.myWallet)">walletを見る</button></td>
-            <td><button class="button2">送る</button></td>
-          </tr>
-        </div>
+        <tr div v-for="(user, index) in users" :key="index">
+          <td>{{ user.username }}</td>
+          <td><button class="button2" @click="openShowWalletModal(user.username, user.myWallet)">walletを見る</button></td>
+          <td><button class="button2" @click="openSendModal(user.uid)">送る</button></td>
+        </tr>
       </table>
       <div>
         <transition>
-          <modal
+          <ShowWalletModal
             v-show="showContent"
-            v-on:click="closeModal"
-            @open="showContent = true"
-            @close="showContent = false"
-          ></modal>
+            @click.self="closeShowWalletModal"
+            @openShowWalletModal="openShowWalletModal"
+            @closeShowWalletModal="closeShowWalletModal"
+          ></ShowWalletModal>
+        </transition>
+        <transition>
+          <SendModal
+            v-show="showContent2"
+            @openSendModal="openSendModal"
+            @closeSendModal="closeSendModal"
+            @onlyCloseSendModal="onlyCloseSendModal"
+          ></SendModal>
         </transition>
       </div>
     </div>
@@ -38,24 +43,30 @@
 
 <script>
 /* eslint-disable */
-import modal from '@/components/modal.vue'
+import ShowWalletModal from '@/components/ShowWalletModal.vue'
+import SendModal from '@/components/SendModal.vue'
 
 export default {
   components: {
-    modal,
+    ShowWalletModal,
+    SendModal,
   },
   data () {
     return {
       showContent: false,
+      showContent2: false,
       clickedUser: '',
       clickedUserWallet: '',
+      tippingWallet: '',
+      clickedUserUid: '',
     }
   },
   methods: {
     signOut () {
       this.$store.dispatch('signOut')
     },
-    openModal (clickedUser, clickedUserWallet){
+    // 「Walletを見る」ボタン
+    openShowWalletModal (clickedUser, clickedUserWallet) {
       // モーダルウィンドウを表示する
       this.showContent = true
       // クリックで選択されたユーザーのデータを取得（users配列からデータを取得）
@@ -65,11 +76,27 @@ export default {
       this.$store.dispatch('modalSet', {
         clickedUser: this.clickedUser,
         clickedUserWallet: this.clickedUserWallet
-        })
+      })
     },
-    closeModal (){
+    closeShowWalletModal () {
       this.showContent = false
     },
+    // 「送る」ボタン
+    openSendModal (clickedUserUid) {
+      this.showContent2 = true
+      this.clickedUserUid = clickedUserUid
+    },
+    closeSendModal (tippingWallet) {
+      this.showContent2 = false
+      this.tippingWallet = tippingWallet
+      this.$store.dispatch('tipping', {
+        tippingWallet: this.tippingWallet,
+        clickedUserUid: this.clickedUserUid,
+      })
+    },
+    onlyCloseSendModal () {
+      this.showContent2 = false
+    }
   },
   computed: {
     users () {
